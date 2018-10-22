@@ -3,9 +3,10 @@ let express = require('express');
 let path = require('path');
 let cookieParser = require('cookie-parser');
 let logger = require('morgan');
+let bodyParser = require('body-parser');
+let mongoose = require('mongoose');
 
 let indexRouter = require('./routes/index');
-let userRouter = require('./routes/user');
 let wishlistRouter = require('./routes/wishlist');
 
 let app = express();
@@ -13,12 +14,19 @@ let app = express();
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+
+
+let dev_db_url = 'mongodb://localhost/wishlist';
+mongoose.connect(dev_db_url, { useNewUrlParser: true });
+mongoose.Promise = global.Promise;
+let db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
 
 app.use('/', indexRouter);
-app.use('/user', userRouter);
-app.use('/wishlist', wishlistRouter);
+app.use('/api/v1', wishlistRouter);
 
 
 app.use(function(req, res, next) {
@@ -39,9 +47,3 @@ app.use(function(err, req, res, next) {
 });
 
 module.exports = app;
-
-
-app.listen(5000, function () {
-    console.log('Wishlist app on http://localhost:5000!');
-});
-
