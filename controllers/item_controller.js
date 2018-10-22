@@ -49,9 +49,14 @@ exports.find_one = function (req, res) {
       res.status(404).send(not_found_resp);
     }
     else {
-      resp.payload = item;
-      resp.status = 200;
-      res.status(200).send(resp)
+      if (item.length < 1){
+        res.status(404).send(not_found_resp);
+      }
+      else{
+        resp.payload = item;
+        resp.status = 200;
+        res.status(200).send(resp)
+      }
     }
   });
 };
@@ -70,13 +75,14 @@ exports.update_one = function (req, res) {
 
 };
 
-
-
-
-
-
-
-
-
-
-
+exports.delete_one = function (req, res) {
+  Item.findOneAndDelete({_id: req.params.id}, function(err, item) {
+    if (err) {
+      res.status(404).send(not_found_resp);
+    }
+    else {
+      resp.status = 204;
+      res.status(204).send(resp);
+    }
+  });
+};
