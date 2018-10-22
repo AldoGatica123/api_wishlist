@@ -27,7 +27,7 @@ const wishlist = [
     "descr": "Quiero un switch T.T",
     "date": "25 Dic 2018",
     "item_url": "https://www.amazon.com/Nintendo-Switch-Gray-Joy/dp/B01LTHP2ZK?th=1"
-  },{
+  }, {
     "id": "2",
     "name": "Nioh",
     "img_url": "https://images-na.ssl-images-amazon.com/images/I/51UehEnXjeL._AC_.jpg",
@@ -35,7 +35,7 @@ const wishlist = [
     "descr": "Quiero Nioh T.T",
     "date": "25 Dic 2018",
     "item_url": "https://www.amazon.com/Nioh-PlayStation-4/dp/B01MRKF099/ref=pd_sim_63_6?_encoding=UTF8&pd_rd_i=B01MRKF099&pd_rd_r=65b5224a-bb99-11e8-8b29-77fe1a29c361&pd_rd_w=gywsr&pd_rd_wg=dLL3w&pf_rd_i=desktop-dp-sims&pf_rd_m=ATVPDKIKX0DER&pf_rd_p=56838e6b-66d4-41e0-a762-743f1a1a628a&pf_rd_r=E93GZ7TBWVN41C0Z1DDY&pf_rd_s=desktop-dp-sims&pf_rd_t=40701&psc=1&refRID=E93GZ7TBWVN41C0Z1DDY"
-  },{
+  }, {
     "id": "3",
     "name": "The Legend of Zelda: Breath of the Wild",
     "img_url": "https://images-na.ssl-images-amazon.com/images/I/51Ox7m6-OIL._AC_.jpg",
@@ -49,68 +49,34 @@ const wishlist = [
 
 router.get('/wishlist', controller.find_all);
 
-router.get('/wishlist/:id', function(req, res, next) {
-  let item = wishlist.find(x => x.id === req.params.id);
-  if(item === undefined){
-    res.status(404).send(not_found_resp);
-  }
-  else{
-    resp.payload = item;
-    resp.status = 200;
-    res.status(200).send(resp)
-  }
-});
+router.get('/wishlist/:id', controller.find_one);
 
 router.post('/wishlist', controller.create);
 
-
-router.delete('/wishlist/:id', function (req, res){
+router.delete('/wishlist/:id', function (req, res) {
   let item = wishlist.find(x => x.id === req.params.id);
-  if(item === undefined){
+  if (item === undefined) {
     res.status(404).send(not_found_resp);
   }
-  else{
+  else {
     let found = false;
-    for(let i = 0; i < items.length; i++) {
+    for (let i = 0; i < items.length; i++) {
       if (items[i].id === item.id) {
         items.splice(i, 1);
         found = true;
         break;
       }
     }
-    if (!found){
+    if (!found) {
       res.status(404).send(not_found_resp);
     }
-    else{
+    else {
       res.status(204).send()
     }
   }
 });
 
-router.put('/wishlist/:id', function(req, res){
-  let saved_item = wishlist.find(x => x.id === req.params.id);
-  if(saved_item === undefined){
-    res.status(404).send(not_found_resp);
-  }
-  else{
-    let new_item = req.body;
-    if (new_item.hasOwnProperty("id") &&
-      new_item.hasOwnProperty("title") &&
-      new_item.hasOwnProperty("descr")){
-      if (saved_item.id !== new_item.id){
-        res.status(400).send(error_resp);
-      }
-      else {
-        items.splice(items.indexOf(saved_item), 1);
-        items.push(new_item);
-        res.status(204).send();
-      }
-    }
-    else{
-      res.status(400).send(error_resp);
-    }
-  }
-});
+router.put('/wishlist/:id', controller.update_one);
 
 
 module.exports = router;

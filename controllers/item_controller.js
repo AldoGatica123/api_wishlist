@@ -16,13 +16,13 @@ let resp = {
 };
 
 
-exports.create = function(req, res) {
+exports.create = function (req, res) {
   let item = new Item(req.body);
   item.save(function (err) {
     if (err) {
       res.status(400).send(error_resp);
     }
-    else{
+    else {
       resp.status = 200;
       resp.payload = item;
       res.status(200).send(resp)
@@ -31,16 +31,52 @@ exports.create = function(req, res) {
 };
 
 exports.find_all = function (req, res) {
-  Item.find({}, function(err, items) {
+  Item.find({}, function (err, items) {
     if (err) {
       res.status(500).send(err);
     }
-    else{
+    else {
       resp.payload = items;
       resp.status = 200;
       res.send(resp);
     }
   });
 };
+
+exports.find_one = function (req, res) {
+  Item.find({_id: req.params.id}, function (err, item) {
+    if (err) {
+      res.status(404).send(not_found_resp);
+    }
+    else {
+      resp.payload = item;
+      resp.status = 200;
+      res.status(200).send(resp)
+    }
+  });
+};
+
+exports.update_one = function (req, res) {
+  Item.replaceOne({_id: req.params.id}, {$set: req.body}, function(err, item) {
+    if (err) {
+      res.status(404).send(not_found_resp);
+    }
+    else {
+      resp.status = 202;
+      resp.payload = req.body;
+      res.status(202).send(resp);
+    }
+  });
+
+};
+
+
+
+
+
+
+
+
+
 
 
