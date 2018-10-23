@@ -33,21 +33,34 @@ exports.create = function (req, res) {
 };
 
 exports.find_all = function (req, res) {
-  Item.find({}, function (err, items) {
-    if (err) {
-      res.status(500).send(err);
+  client.get('wishlist', function (err, response) {
+    if (response) {
+      console.log('cache');
+      resp.payload = JSON.parse(response);
+      resp.status = 200;
+      res.status(200).send(resp)
     }
     else {
-      resp.payload = items;
-      resp.status = 200;
-      res.send(resp);
+      console.log('db');
+      Item.find({}, function (err, items) {
+        if (err) {
+          res.status(500).send(err);
+        }
+        else {
+          client.set('wishlist', JSON.stringify(items));
+          client.expire('wishlist', 20);
+          resp.payload = items;
+          resp.status = 200;
+          res.send(resp);
+        }
+      });
     }
   });
 };
 
 exports.find_one = function (req, res) {
   client.get(req.params.id, function (err, response) {
-    if (response){
+    if (response) {
       resp.payload = JSON.parse(response);
       resp.status = 200;
       res.status(200).send(resp)
@@ -58,11 +71,12 @@ exports.find_one = function (req, res) {
           res.status(404).send(not_found_resp);
         }
         else {
-          if (item.length < 1){
+          if (item.length < 1) {
             res.status(404).send(not_found_resp);
           }
-          else{
+          else {
             client.set(req.params.id, JSON.stringify(item));
+            client.expire(req.params.id, 30);
             resp.payload = item;
             resp.status = 200;
             res.status(200).send(resp)
@@ -74,7 +88,7 @@ exports.find_one = function (req, res) {
 };
 
 exports.update_one = function (req, res) {
-  Item.replaceOne({_id: req.params.id}, {$set: req.body}, function(err, item) {
+  Item.replaceOne({_id: req.params.id}, {$set: req.body}, function (err, item) {
     if (err) {
       res.status(404).send(not_found_resp);
     }
@@ -88,7 +102,7 @@ exports.update_one = function (req, res) {
 };
 
 exports.delete_one = function (req, res) {
-  Item.findOneAndDelete({_id: req.params.id}, function(err, item) {
+  Item.findOneAndDelete({_id: req.params.id}, function (err, item) {
     if (err) {
       res.status(404).send(not_found_resp);
     }
