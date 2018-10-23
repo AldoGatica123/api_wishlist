@@ -3,8 +3,9 @@ let router = express.Router();
 
 resp = {
   status: "woop woop",
-  routes:[
-    "api/v1/wishlist"
+  paths:[
+    "/api/v1/wishlist",
+    "/api/v1/wishlist/:item_id"
   ]
 };
 
