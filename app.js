@@ -1,11 +1,9 @@
 let createError = require('http-errors');
 let express = require('express');
-let path = require('path');
 let cookieParser = require('cookie-parser');
 let logger = require('morgan');
 let bodyParser = require('body-parser');
 let mongoose = require('mongoose');
-
 let configDB = require('./config/database.js');
 
 let indexRouter = require('./routes/index');
@@ -23,7 +21,6 @@ mongoose.connect(configDB.url, { useNewUrlParser: true });
 mongoose.Promise = global.Promise;
 let db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-
 
 app.use('/', indexRouter);
 app.use('/api/v1', wishlistRouter);

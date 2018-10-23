@@ -1,4 +1,6 @@
 const Item = require('../models/item_model');
+let redis = require('redis');
+let client = redis.createClient();
 
 let not_found_resp = {
   status: 404,
@@ -44,19 +46,29 @@ exports.find_all = function (req, res) {
 };
 
 exports.find_one = function (req, res) {
-  Item.find({_id: req.params.id}, function (err, item) {
-    if (err) {
-      res.status(404).send(not_found_resp);
+  client.get(req.params.id, function (err, response) {
+    if (response){
+      resp.payload = JSON.parse(response);
+      resp.status = 200;
+      res.status(200).send(resp)
     }
     else {
-      if (item.length < 1){
-        res.status(404).send(not_found_resp);
-      }
-      else{
-        resp.payload = item;
-        resp.status = 200;
-        res.status(200).send(resp)
-      }
+      Item.find({_id: req.params.id}, function (err, item) {
+        if (err) {
+          res.status(404).send(not_found_resp);
+        }
+        else {
+          if (item.length < 1){
+            res.status(404).send(not_found_resp);
+          }
+          else{
+            client.set(req.params.id, JSON.stringify(item));
+            resp.payload = item;
+            resp.status = 200;
+            res.status(200).send(resp)
+          }
+        }
+      });
     }
   });
 };
