@@ -1,0 +1,26 @@
+version: '3'
+services:
+  api:
+    build: .
+    image: "aldogatica123/api_wishlist"
+    container_name: "api_wishlist"
+    command: npm run start
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - REDIS_URL=redis://redis
+      - MONGODB_URL=mongodb://mongo/wishlist
+    depends_on:
+      - mongo
+      - redis
+  mongo:
+    image: mongo
+    container_name: "mongo"
+    ports:
+      - "27017:27017"
+  redis:
+    image: redis
+    container_name: "redis"
+    ports:
+      - "6379:6379"

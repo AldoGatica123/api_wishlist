@@ -4,7 +4,6 @@ let cookieParser = require('cookie-parser');
 let logger = require('morgan');
 let bodyParser = require('body-parser');
 let mongoose = require('mongoose');
-let configDB = require('./config/database.js');
 
 let indexRouter = require('./routes/index');
 let wishlistRouter = require('./routes/wishlist');
@@ -17,7 +16,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-mongoose.connect(configDB.url, { useNewUrlParser: true });
+mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true });
 mongoose.Promise = global.Promise;
 let db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));

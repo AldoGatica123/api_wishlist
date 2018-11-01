@@ -1,6 +1,6 @@
 const Item = require('../models/item_model');
 let redis = require('redis');
-let client = redis.createClient();
+let client = redis.createClient(process.env.REDIS_URL);
 
 let not_found_resp = {
   status: 404,
@@ -35,13 +35,11 @@ exports.create = function (req, res) {
 exports.find_all = function (req, res) {
   client.get('wishlist', function (err, response) {
     if (response) {
-      console.log('cache');
       resp.payload = JSON.parse(response);
       resp.status = 200;
       res.status(200).send(resp)
     }
     else {
-      console.log('db');
       Item.find({}, function (err, items) {
         if (err) {
           res.status(500).send(err);
