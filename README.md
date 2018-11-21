@@ -64,7 +64,10 @@ Laboratorio 10
 - El proyecto de backend se modificó para pedir variables de entorno para las conexiones de los clientes de mongoose y redis.
 
 ### Lab 9
-
+- Se crearon dos clústeres diferentes, uno para frontend y otro para backend
+- Se hizo un servicio que corre un task que contiene las condiciones de comunicación entre contenedores de mongo, redis y el api
+- Se hizo otro servicio para correr el contenedor de react
 
 ### Lab 10
-Se 
+- Se hizo las descripciones de los 
+- Se hicieron load balancers para cada uno de los clústeres, exponiendo los servicios
