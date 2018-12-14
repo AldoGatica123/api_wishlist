@@ -1,6 +1,6 @@
 const Item = require('../models/item_model');
 let redis = require('redis');
-let client = redis.createClient(process.env.REDIS_URL);
+let client = redis.createClient(process.env.REDIS_URL || 'redis://localhost');
 
 let not_found_resp = {
   status: 404,
