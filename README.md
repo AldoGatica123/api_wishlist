@@ -1,8 +1,8 @@
-##Description
+## Description
 Project made to act as a CRUD for a wishlist application.  
 It is a Express server using a Mongoose and Redis client. 
 
-##Quickstart
+## Quickstart
 It depends on a mongo server and redis running before the api.
 
 ```
@@ -11,14 +11,14 @@ npm start
 
 The server runs on the port 3000 by default
 
-####Environment variables
+#### Environment variables
 ```
 PORT=3000
 REDIS_URL=redis://localhost
 MONGODB_URL=mongodb://localhost/wishlist`
 ```
 
-####Routes and methods
+#### Routes and methods
 
 ```
 GET POST
@@ -29,7 +29,7 @@ GET PUT DELETE
 /api/v1/wishlist/:item_id
 ```
 
-####JSON object model:
+#### JSON object model:
 
 ```
 {
